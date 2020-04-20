@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{34E84787-A0B9-4555-983D-31BFD1125D23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{CE8355BE-4A69-46DB-AA05-572E5F8281AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{195D00F2-5B4E-48B5-AC3F-2BD154F17FA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayeredArch.Infra.Data", "LayeredArch.Infra.Data\LayeredArch.Infra.Data.csproj", "{13060AA8-83FD-4D24-B260-3C679422B262}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayeredArch.Infra.IoC", "LayeredArch.Infra.IoC\LayeredArch.Infra.IoC.csproj", "{1E49F46D-8E15-4A6C-987C-8613BEDBC1E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayeredArch.Core.Application", "LayeredArch.Core.Application\LayeredArch.Core.Application.csproj", "{BDCD0222-E0F5-44CE-BF8E-96BD8E9BAF80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayeredArch.Core.Domain", "LayeredArch.Core.Domain\LayeredArch.Core.Domain.csproj", "{25BABC46-AD21-49FD-A753-1A298AB07E45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayeredArch.Api", "LayeredArch.Api\LayeredArch.Api.csproj", "{47DD0B5C-DBAC-4D02-A3CA-E9877F074A30}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13060AA8-83FD-4D24-B260-3C679422B262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13060AA8-83FD-4D24-B260-3C679422B262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13060AA8-83FD-4D24-B260-3C679422B262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13060AA8-83FD-4D24-B260-3C679422B262}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E49F46D-8E15-4A6C-987C-8613BEDBC1E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E49F46D-8E15-4A6C-987C-8613BEDBC1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E49F46D-8E15-4A6C-987C-8613BEDBC1E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E49F46D-8E15-4A6C-987C-8613BEDBC1E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDCD0222-E0F5-44CE-BF8E-96BD8E9BAF80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDCD0222-E0F5-44CE-BF8E-96BD8E9BAF80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDCD0222-E0F5-44CE-BF8E-96BD8E9BAF80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDCD0222-E0F5-44CE-BF8E-96BD8E9BAF80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25BABC46-AD21-49FD-A753-1A298AB07E45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25BABC46-AD21-49FD-A753-1A298AB07E45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25BABC46-AD21-49FD-A753-1A298AB07E45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25BABC46-AD21-49FD-A753-1A298AB07E45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47DD0B5C-DBAC-4D02-A3CA-E9877F074A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47DD0B5C-DBAC-4D02-A3CA-E9877F074A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47DD0B5C-DBAC-4D02-A3CA-E9877F074A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47DD0B5C-DBAC-4D02-A3CA-E9877F074A30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{13060AA8-83FD-4D24-B260-3C679422B262} = {34E84787-A0B9-4555-983D-31BFD1125D23}
+		{1E49F46D-8E15-4A6C-987C-8613BEDBC1E7} = {34E84787-A0B9-4555-983D-31BFD1125D23}
+		{BDCD0222-E0F5-44CE-BF8E-96BD8E9BAF80} = {CE8355BE-4A69-46DB-AA05-572E5F8281AB}
+		{25BABC46-AD21-49FD-A753-1A298AB07E45} = {CE8355BE-4A69-46DB-AA05-572E5F8281AB}
+		{47DD0B5C-DBAC-4D02-A3CA-E9877F074A30} = {195D00F2-5B4E-48B5-AC3F-2BD154F17FA7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7BC796F0-369B-4245-ADBD-EBE47CF3BDAE}
+	EndGlobalSection
+EndGlobal
