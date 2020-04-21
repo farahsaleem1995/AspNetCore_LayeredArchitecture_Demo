@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using LayeredArch.Core.Application.Resources.AuthDto;
-using LayeredArch.Core.Application.Resources.IdentityDto;
+using LayeredArch.Core.Application.DTO.AuthDto;
+using LayeredArch.Core.Application.DTO.IdentityDto;
 using LayeredArch.Core.Domain.Models.Identity;
 using System;
 using System.Collections.Generic;
@@ -25,9 +25,8 @@ namespace LayeredArch.Core.Application.Mapping
             CreateMap<DomainRole, RoleDto>();
 
             // Map services DTO domain model
-            CreateMap<RegisterUserDto, DomainUser>();
-
-            CreateMap<UserDto, DomainUser>();
+            CreateMap<UserDto, DomainUser>()
+                .ForMember(du => du.Id, opt => opt.Ignore());
 
             CreateMap<RoleDto, DomainRole>();
         }

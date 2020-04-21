@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using LayeredArch.Core.Application.Interfaces;
 using LayeredArch.Core.Application.Services;
+using LayeredArch.Core.Domain.Interfaces;
 using LayeredArch.Core.Domain.Models.Identity;
 using LayeredArch.Infra.Data.Context;
+using LayeredArch.Infra.Data.Repositories;
 using LayeredArch.Infra.Data.SeedData;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +32,9 @@ namespace LayeredArch.Infra.IoC
 
             // Application Layer
             services.AddScoped<IUserService, UserService>();
+
+            // Domain Layer
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

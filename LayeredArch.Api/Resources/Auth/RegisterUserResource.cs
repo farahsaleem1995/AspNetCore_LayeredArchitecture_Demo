@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace LayeredArch.Core.Application.Resources.AuthDto
+namespace LayeredArch.Api.Resources.Auth
 {
-    public class RegisterUserDto
+    public class RegisterUserResource
     {
         public string UserName { get; set; }
 

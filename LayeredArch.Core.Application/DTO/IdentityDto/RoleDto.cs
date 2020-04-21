@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LayeredArch.Core.Application.Resources.IdentityDto
+namespace LayeredArch.Core.Application.DTO.IdentityDto
 {
     public class RoleDto
     {

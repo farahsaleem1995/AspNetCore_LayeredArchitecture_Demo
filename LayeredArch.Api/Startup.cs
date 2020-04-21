@@ -50,7 +50,7 @@ namespace LayeredArch.Api
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
 
-                //options.SignIn.RequireConfirmedPhoneNumber = true;
+                options.SignIn.RequireConfirmedPhoneNumber = true;
             });
 
             services.AddAuthentication(options =>
@@ -73,6 +73,8 @@ namespace LayeredArch.Api
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,6 +92,7 @@ namespace LayeredArch.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             SeedDataClass.Seed(context, roleManager, userManager);
