@@ -23,21 +23,38 @@ namespace LayeredArch.Infra.IoC
             // Data Layer
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<DomainUser, DomainRole>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = false;
-            })
+            services.AddIdentity<DomainUser, DomainRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddTokenProvider<PhoneNumberTokenProvider<DomainUser>>("PhoneNumberTokenProvider");
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 1;
+
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+
+                options.SignIn.RequireConfirmedPhoneNumber = true;
+
+                options.Tokens.PasswordResetTokenProvider = "PhoneNumberTokenProvider";
+            });
+
+            services.AddAuthorization();
 
             // Application Layer
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
             // Domain Layer
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            //
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         }
     }
 }

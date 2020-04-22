@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using LayeredArch.Core.Domain.Models.Identity;
+using LayeredArch.Core.Domain.Models.Auth;
 
 namespace LayeredArch.Infra.Data.Context
 {
@@ -16,6 +17,8 @@ namespace LayeredArch.Infra.Data.Context
         IdentityUserClaim<string>, DomainUserRole, IdentityUserLogin<string>,
         IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

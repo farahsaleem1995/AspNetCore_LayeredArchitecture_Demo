@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LayeredArch.Api.Resources;
 using LayeredArch.Api.Resources.Auth;
 using LayeredArch.Core.Application.DTO.AuthDto;
 using LayeredArch.Core.Application.DTO.IdentityDto;
@@ -24,14 +23,17 @@ namespace LayeredArch.Api.Controllers
     public class AuthController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IRefreshTokenService _refreshTokenService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
 
         public AuthController(IUserService userService, 
+                                IRefreshTokenService refreshTokenService,
                                 IMapper mapper,
                                 IConfiguration config)
         {
             _userService = userService;
+            _refreshTokenService = refreshTokenService;
             _mapper = mapper;
             _config = config;
         }
@@ -61,9 +63,10 @@ namespace LayeredArch.Api.Controllers
             {
                 var signedInUser = await _userService.CheckPasswordSignInAsync(loginUserResource.UserName, loginUserResource.Password);
 
-                var AccessToken = await GenerateAccessTokenAsync(signedInUser);
+                var accessToken = await GenerateAccessTokenAsync(signedInUser);
+                var refreshTokenDto = await _refreshTokenService.GetNew(signedInUser.Id, accessToken);
 
-                return new OkObjectResult(new { AccessToken = AccessToken });
+                return new OkObjectResult(_mapper.Map<RefreshTokenDto, TokenResource>(refreshTokenDto));
             }
 
             return new BadRequestObjectResult(new { message = "Failed to register" });
@@ -117,6 +120,7 @@ namespace LayeredArch.Api.Controllers
             return new BadRequestObjectResult(new { message = "Failed reset Password!" });
         }
 
+        [Authorize]
         [HttpGet("{userId}/SendConfirmationEmail")]
         public async Task<IActionResult> SendConfirmationEmail([FromRoute] string userId)
         {
@@ -135,6 +139,23 @@ namespace LayeredArch.Api.Controllers
         {
             await _userService.ConfirmEmailAsync(emailConfirmationResource.UserId, emailConfirmationResource.Token);
             return new OkObjectResult(new { message = "Email has confirmed successfully." });
+        }
+
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] CreateTokenResourcecs resource)
+        {
+            if (ModelState.IsValid)
+            {
+                var refrehTokenDto = _mapper.Map<CreateTokenResourcecs, RefreshTokenDto>(resource);
+                var user = await _refreshTokenService.CheckUser(refrehTokenDto);
+
+                var newAccesToken = await GenerateAccessTokenAsync(user);
+                var newRefreshTokenDto = await _refreshTokenService.GetNew(user.Id, newAccesToken);
+
+                return new OkObjectResult(_mapper.Map<RefreshTokenDto, TokenResource>(newRefreshTokenDto));
+            }
+
+            return new BadRequestObjectResult(new { message = "Failed to refresh the token!" });
         }
 
         private async Task<string> GenerateAccessTokenAsync(UserDto user)
