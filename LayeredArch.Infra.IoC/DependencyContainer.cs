@@ -45,8 +45,6 @@ namespace LayeredArch.Infra.IoC
                 options.Tokens.PasswordResetTokenProvider = "PhoneNumberTokenProvider";
             });
 
-            services.AddAuthorization();
-
             // Application Layer
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IUserService, UserService>();
@@ -54,6 +52,7 @@ namespace LayeredArch.Infra.IoC
 
             // Domain Layer
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         }
     }

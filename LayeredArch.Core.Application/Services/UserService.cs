@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
-using LayeredArch.Core.Application.DTO.AuthDto;
+using LayeredArch.Core.Application.DTO;
 using LayeredArch.Core.Application.DTO.IdentityDto;
 using LayeredArch.Core.Application.Exceptions;
+using LayeredArch.Core.Application.Extensions;
 using LayeredArch.Core.Application.Interfaces;
 using LayeredArch.Core.Domain.Interfaces;
+using LayeredArch.Core.Domain.Models;
 using LayeredArch.Core.Domain.Models.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,37 +23,86 @@ namespace LayeredArch.Core.Application.Services
         private readonly UserManager<DomainUser> _userManager;
         private readonly RoleManager<DomainRole> _roleManager;
         private readonly SignInManager<DomainUser> _signInManager;
+        private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public UserService(UserManager<DomainUser> userManager, 
                             RoleManager<DomainRole> roleManager,
                             SignInManager<DomainUser> signInManager,
+                            IUserRepository userRepository,
                             IUnitOfWork unitOfWork,
                             IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<UserDto> FindByIdAsync(string userId)
+        public async Task<QueryResultDto<UserDto>> GetUsersAsync(UserQueryDto queryDto)
         {
-            var user = await _userManager.Users
-                                .Include(u => u.UserRoles)
-                                    .ThenInclude(ur => ur.Role)
-                                .Where(u => u.Id == userId)
-                                .FirstOrDefaultAsync();
+            var result = new QueryResult<DomainUser>();
+            var users = await _userRepository.GetUsersAsync();
+
+            var query = users.AsQueryable();
+            var filterColumnsMap = new Dictionary<string, Expression<Func<DomainUser, bool>>>()
+            {
+                ["IsActive"] = u => u.IsActive == queryDto.IsActive,
+                ["RoleId"] = u => u.UserRoles.Select(ur => ur.RoleId).Contains(queryDto.RoleId)
+            };
+            query = query.ApplyFiltering(queryDto, filterColumnsMap);
+
+            var orderoColumnsMap = new Dictionary<string, Expression<Func<DomainUser, object>>>()
+            {
+                ["fisrtName"] = u => u.FirstName,
+                ["lastName"] = u => u.LastName,
+                ["email"] = u => u.Email,
+                ["createdAt"] = u => u.CreatedAt
+            };
+            query = query.ApplyOrdering(queryDto, orderoColumnsMap);
+
+            result.TotalItems = query.Count();
+            query = query.ApplyPaging(queryDto);
+
+            result.Items = query.ToList();
+            return _mapper.Map<QueryResult<DomainUser>, QueryResultDto<UserDto>>(result);
+        }
+
+        public async Task<UserDto> FindByIdAsync(string userId, bool isAdmin = false)
+        {
+            var user = await _userRepository.FindByIdAsync(userId, isAdmin: isAdmin);
 
             return _mapper.Map<DomainUser, UserDto>(user);
         }
 
-        public async Task<UserDto> FindByNameAsync(string userName)
+        public async Task<UserDto> FindByNameAsync(string userName, bool isAdmin = false)
         {
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userRepository.FindByNameAsync(userName, isAdmin: isAdmin);
             return _mapper.Map<DomainUser, UserDto>(user);
+        }
+
+        public async Task<QueryResultDto<UserDto>> SearchByNameAsync(string searchKey, UserQueryDto queryDto, bool isAdmin = false)
+        {
+            var result = new QueryResult<DomainUser>();
+            var users = await _userRepository.GetUsersAsync(isAdmin: isAdmin);
+            if (!isAdmin)
+            {
+                 users = users.Where(u => u.IsActive == true).AsQueryable();
+            }
+
+            var query = users.AsQueryable();
+            query = query.ApplySearch(searchKey);
+            result.TotalItems = await query.CountAsync();
+
+            query = query.ApplyPaging(queryDto);
+
+            var items = await query.ToListAsync();
+            result.Items = items.OrderBy(q => q.Similarity);
+
+            return _mapper.Map<QueryResult<DomainUser>, QueryResultDto<UserDto>>(result);
         }
 
         public async Task<IEnumerable<string>> GetRolesAsync(string userId)
@@ -93,14 +144,37 @@ namespace LayeredArch.Core.Application.Services
             return _mapper.Map<DomainUser, UserDto>(domainUser);
         }
 
-        public async Task UpdateUserAsync(string userId, UserDto userDto)
+        public async Task UpdateUserAsync(string userId, UserDto userDto, bool isAdmin = false)
         {
-            var updateUser = await _userManager.FindByIdAsync(userId);
+            var updateUser = await _userRepository.FindByIdAsync(userId, isAdmin: isAdmin);
             if (updateUser == null)
             {
                 throw new CoreException(404, "User not found");
             }
             _mapper.Map<UserDto, DomainUser>(userDto, updateUser);
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task DeleteUserAsync(string userId)
+        {
+            var updateUser = await _userRepository.FindByIdAsync(userId, isAdmin: true);
+            if (updateUser == null)
+            {
+                throw new CoreException(404, "User not found");
+            }
+            updateUser.IsActive = false;
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task ActivateUserAsync(string userId)
+        {
+            var updateUser = await _userRepository.FindByIdAsync(userId, isAdmin: true);
+            if (updateUser == null)
+            {
+                throw new CoreException(404, "User not found");
+            }
+            updateUser.IsActive = true;
+            await _unitOfWork.CompleteAsync();
         }
 
         public async Task<UserDto> CheckPasswordSignInAsync(string userName, string password)
@@ -165,10 +239,7 @@ namespace LayeredArch.Core.Application.Services
             }
 
             var phoneNumber = newPhoneNumber ?? domainUser.PhoneNumber;
-            var previousUser = await _userManager.Users
-                                        .Where(u => u.PhoneNumberConfirmed)
-                                        .Where(u => u.PhoneNumber == phoneNumber)
-                                        .FirstOrDefaultAsync();
+            var previousUser = await _userRepository.FindByConfirmedPhoneNumberAsync(domainUser.Id);
 
             var result = await _userManager.ChangePhoneNumberAsync(domainUser, phoneNumber, securityCode);
             if (!result.Succeeded)
@@ -208,10 +279,7 @@ namespace LayeredArch.Core.Application.Services
                 throw new CoreException(404, "User not found");
             }
 
-            var previousUser = await _userManager.Users
-                                        .Where(u => u.EmailConfirmed)
-                                        .Where(u => u.Email == user.Email)
-                                        .FirstOrDefaultAsync();
+            var previousUser = await _userRepository.FindByConfirmedEmailAsync(user.Id);
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
             {

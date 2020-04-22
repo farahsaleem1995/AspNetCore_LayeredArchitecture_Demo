@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LayeredArch.Api.Middlewares;
+using LayeredArch.Api.Policies.Account;
 using LayeredArch.Core.Domain.Models.Identity;
 using LayeredArch.Infra.Data.Context;
 using LayeredArch.Infra.Data.SeedData;
@@ -57,6 +58,12 @@ namespace LayeredArch.Api
                     ValidAudience = Configuration["Token:Audience"],
                     ClockSkew = TimeSpan.Zero
                 };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("UserPolicy", policy => policy.AddRequirements(new UserRequirements()));
+                options.AddPolicy("RolePolicy", policy => policy.AddRequirements(new RoleRequirements()));
             });
         }
 
