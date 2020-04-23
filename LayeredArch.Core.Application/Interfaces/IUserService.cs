@@ -14,8 +14,12 @@ namespace LayeredArch.Core.Application.Interfaces
         Task<UserDto> FindByIdAsync(string userId, bool isAdmin = false);
         Task<UserDto> FindByNameAsync(string userId, bool isAdmin = false);
         Task<QueryResultDto<UserDto>> SearchByNameAsync(string searchKey, UserQueryDto queryDto, bool isAdmin = false);
+        Task<IEnumerable<RoleDto>> GetRolesAsync();
         Task<IEnumerable<string>> GetRolesAsync(string userId);
+        Task<RoleDto> FindRoleById(string roleId);
         Task<RoleDto> FindRoleByNameAsync(string roleName);
+        Task AddToRoleAsync(string userId, string roleName);
+        Task RemoveFromRoleAsync(string userId, string roleName);
         Task<UserDto> CreateUserAsync(RegisterUserDto user, RoleDto role, string password);
         Task UpdateUserAsync(string userId, UpdateUserDto userDto, bool isAdmin = false);
         Task DeleteUserAsync(string userId);

@@ -29,7 +29,7 @@ namespace LayeredArch.Api.Mapping
 
             CreateMap<UserDto, UserAdminstrationResource>();
 
-            CreateMap<UserDto, RoleResource>();
+            CreateMap<RoleDto, RoleResource>();
 
             // Map API resources to core layer DTO
             CreateMap<UserQueryResource, UserQueryDto>();

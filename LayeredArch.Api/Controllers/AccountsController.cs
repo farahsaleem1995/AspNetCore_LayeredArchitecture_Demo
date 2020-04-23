@@ -109,5 +109,46 @@ namespace LayeredArch.Api.Controllers
 
             return new OkObjectResult(new { message = "User has been activated successfully." });
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Roles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _userService.GetRolesAsync();
+
+            var respone = _mapper.Map<IEnumerable<RoleDto>, IEnumerable<RoleResource>>(roles);
+
+            return new OkObjectResult(respone);
+        }
+
+        [Authorize(Policy = "RolePolicy")]
+        [HttpPost("{userId}/AssignRole")]
+        public async Task<IActionResult> AddAccountToRole([FromRoute] string userId, [FromBody] AssignRoleResource roleResource)
+        {
+            if (ModelState.IsValid)
+            {
+                await _userService.AddToRoleAsync(userId, roleResource.RoleName);
+
+                return new OkObjectResult(new { message = "User has been added to role successfully." });
+            }
+
+            return new BadRequestObjectResult(new { message = "Failed to add user to role!" });
+        }
+
+        [Authorize(Policy = "RolePolicy")]
+        [HttpDelete("{userId}/AssignRole/{roleId}")]
+        public async Task<IActionResult> RemoveAccountFromRole([FromRoute] string userId, [FromRoute] string roleId)
+        {
+            if (ModelState.IsValid)
+            {
+                var role = await _userService.FindRoleById(roleId);
+
+                await _userService.RemoveFromRoleAsync(userId, role.Name);
+
+                return new OkObjectResult(new { message = "User has been removed from role successfully." });
+            }
+
+            return new BadRequestObjectResult(new { message = "Failed to add user to role!" });
+        }
     }
 }

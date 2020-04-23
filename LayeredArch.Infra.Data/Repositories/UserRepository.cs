@@ -84,9 +84,41 @@ namespace LayeredArch.Infra.Data.Repositories
                             .FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<DomainRole>> GetRolesAsync()
+        {
+            return await _roleManager.Roles.ToListAsync();
+        }
+
         public async Task<IEnumerable<string>> GetRolesAsync(DomainUser user)
         {
             return await _userManager.GetRolesAsync(user);
+        }
+
+        public async Task<DomainRole> FindRoleById(string roleId)
+        {
+            return await _roleManager.FindByIdAsync(roleId);
+        }
+
+        public async Task<IUserResult> AddToRoleAsync(DomainUser user, string roleName)
+        {
+            var userResult = new UserResult();
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            userResult.Succeeded = result.Succeeded;
+            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+
+            return userResult;
+        }
+
+        public async Task<IUserResult> RemoveFromRoleAsync(DomainUser user, string roleName)
+        {
+            var userResult = new UserResult();
+
+            var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+            userResult.Succeeded = result.Succeeded;
+            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+
+            return userResult;
         }
 
         public async Task<DomainRole> FindRoleByNameAsync(string roleName)

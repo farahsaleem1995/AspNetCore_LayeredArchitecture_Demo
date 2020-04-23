@@ -15,7 +15,11 @@ namespace LayeredArch.Core.Domain.Interfaces
         Task<DomainUser> FindByNameAsync(string userId, bool isAdmin = false);
         Task<DomainUser> FindByConfirmedPhoneNumberAsync(string userId);
         Task<DomainUser> FindByConfirmedEmailAsync(string userId);
+        Task<IEnumerable<DomainRole>> GetRolesAsync();
         Task<IEnumerable<string>> GetRolesAsync(DomainUser user);
+        Task<DomainRole> FindRoleById(string roleId);
+        Task<IUserResult> AddToRoleAsync(DomainUser user, string roleName);
+        Task<IUserResult> RemoveFromRoleAsync(DomainUser user, string roleName);
         Task<DomainRole> FindRoleByNameAsync(string roleName);
         Task<IUserResult> CreateAsync(DomainUser user, string password);
         Task<ILogInResult> CheckPasswordSignInAsync(DomainUser user, string password);

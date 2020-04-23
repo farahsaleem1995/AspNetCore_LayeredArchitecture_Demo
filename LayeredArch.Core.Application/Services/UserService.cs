@@ -8,7 +8,6 @@ using LayeredArch.Core.Application.Interfaces;
 using LayeredArch.Core.Domain.Interfaces;
 using LayeredArch.Core.Domain.Models;
 using LayeredArch.Core.Domain.Models.Identity;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +96,12 @@ namespace LayeredArch.Core.Application.Services
             return _mapper.Map<QueryResult<DomainUser>, QueryResultDto<UserDto>>(result);
         }
 
+        public async Task<IEnumerable<RoleDto>> GetRolesAsync()
+        {
+            var roles = await _userRepository.GetRolesAsync();
+            return _mapper.Map<IEnumerable<DomainRole>, IEnumerable<RoleDto>>(roles);
+        }
+
         public async Task<IEnumerable<string>> GetRolesAsync(string userId)
         {
             var domainUser = await _userRepository.FindByIdAsync(userId);
@@ -109,6 +114,12 @@ namespace LayeredArch.Core.Application.Services
             return roles;
         }
 
+        public async Task<RoleDto> FindRoleById(string roleId)
+        {
+            var domainRole = await _userRepository.FindRoleById(roleId);
+            return _mapper.Map<DomainRole, RoleDto>(domainRole);
+        }
+
         public async Task<RoleDto> FindRoleByNameAsync(string roleName)
         {
             var role = await _userRepository.FindRoleByNameAsync(roleName);
@@ -118,6 +129,36 @@ namespace LayeredArch.Core.Application.Services
             }
 
             return _mapper.Map<DomainRole, RoleDto>(role);
+        }
+
+        public async Task AddToRoleAsync(string userId, string roleName)
+        {
+            var domainUser = await _userRepository.FindByIdAsync(userId);
+            if (domainUser == null)
+            {
+                throw new CoreException(404, "User not found");
+            }
+
+            var result = await _userRepository.AddToRoleAsync(domainUser, roleName);
+            if (!result.Succeeded)
+            {
+                throw new CoreException(400, result.Error);
+            }
+        }
+
+        public async Task RemoveFromRoleAsync(string userId, string roleName)
+        {
+            var domainUser = await _userRepository.FindByIdAsync(userId);
+            if (domainUser == null)
+            {
+                throw new CoreException(404, "User not found");
+            }
+
+            var result = await _userRepository.RemoveFromRoleAsync(domainUser, roleName);
+            if (!result.Succeeded)
+            {
+                throw new CoreException(400, result.Error);
+            }
         }
 
         public async Task<UserDto> CreateUserAsync(RegisterUserDto user, RoleDto role, string password)
