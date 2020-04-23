@@ -1,6 +1,7 @@
 ﻿using LayeredArch.Core.Domain.Interfaces;
 using LayeredArch.Core.Domain.Models;
 using LayeredArch.Core.Domain.Models.Identity;
+using LayeredArch.Infra.Data.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -34,7 +35,7 @@ namespace LayeredArch.Infra.Data.Repositories
                             .AsQueryable();
             if (!isAdmin)
             {
-                query = query.Where(u => !u.IsActive).AsQueryable();
+                query = query.Where(u => u.IsActive).AsQueryable();
             }
             return await query.ToListAsync();
         }
@@ -48,7 +49,7 @@ namespace LayeredArch.Infra.Data.Repositories
                             .AsQueryable();
             if (!isAdmin)
             {
-                query = query.Where(u => !u.IsActive).AsQueryable();
+                query = query.Where(u => u.IsActive).AsQueryable();
             }
             return await query.FirstOrDefaultAsync();
         }
@@ -62,7 +63,7 @@ namespace LayeredArch.Infra.Data.Repositories
                             .AsQueryable();
             if (!isAdmin)
             {
-                query = query.Where(u => !u.IsActive).AsQueryable();
+                query = query.Where(u => u.IsActive).AsQueryable();
             }
             return await query.FirstOrDefaultAsync();
         }
@@ -82,5 +83,107 @@ namespace LayeredArch.Infra.Data.Repositories
                             .Where(u => u.Email == email)
                             .FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<string>> GetRolesAsync(DomainUser user)
+        {
+            return await _userManager.GetRolesAsync(user);
+        }
+
+        public async Task<DomainRole> FindRoleByNameAsync(string roleName)
+        {
+            return await _roleManager.FindByNameAsync(roleName);
+        }
+
+        public async Task<IUserResult> CreateAsync(DomainUser user, string password)
+        {
+            var userResult = new UserResult();
+
+            var result = await _userManager.CreateAsync(user, password);
+            userResult.Succeeded = result.Succeeded;
+            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+
+            return userResult;
+        }
+
+        public async Task<ILogInResult> CheckPasswordSignInAsync(DomainUser user, string password)
+        {
+            var logInResult = new LogInResult();
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, true);
+            logInResult.Succeeded = result.Succeeded;
+            logInResult.IsLockedOut = result.IsLockedOut;
+            logInResult.IsNotAllowed = result.IsNotAllowed;
+
+            return logInResult;
+        }
+
+        public async Task<bool> CheckPasswordAsync(DomainUser user, string password)
+        {
+            return await _userManager.CheckPasswordAsync(user, password);
+        }
+
+        public async Task<bool> CanSignInAsync(DomainUser user)
+        {
+            return await _signInManager.CanSignInAsync(user);
+        }
+
+        public async Task<string> GenerateChangePhoneNumberTokenAsync(DomainUser user, string phoneNumber)
+        {
+            return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(DomainUser user)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(DomainUser user)
+        {
+            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+
+        public async Task<IUserResult> ChangePhoneNumberAsync(DomainUser user, string phoneNumber, string securityCode)
+        {
+            var userResult = new UserResult();
+
+            var result = await _userManager.ChangePhoneNumberAsync(user, phoneNumber, securityCode);
+            userResult.Succeeded = result.Succeeded;
+            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+
+            return userResult;
+        }
+
+        public async Task<IUserResult> ResetPasswordAsync(DomainUser user, string securityCode, string password)
+        {
+            var userResult = new UserResult();
+
+            var result = await _userManager.ResetPasswordAsync(user, securityCode, password);
+            userResult.Succeeded = result.Succeeded;
+            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+
+            return userResult;
+        }
+
+        public async Task<IUserResult> ConfirmEmailAsync(DomainUser user, string token)
+        {
+            var userResult = new UserResult();
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            userResult.Succeeded = result.Succeeded;
+            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+
+            return userResult;
+        }
+
+        public async Task<bool> IsLockedOutAsync(DomainUser user)
+        {
+            return await _userManager.IsLockedOutAsync(user);
+        }
+
+        public async Task SetLockoutEndDateAsync(DomainUser user, DateTimeOffset? lockoutEnd)
+        {
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+        }
+
     }
 }

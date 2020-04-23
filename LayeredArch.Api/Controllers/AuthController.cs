@@ -43,10 +43,10 @@ namespace LayeredArch.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userDto = _mapper.Map<RegisterUserResource, UserDto>(userResource);
+                var registerUserDto = _mapper.Map<RegisterUserResource, RegisterUserDto>(userResource);
                 var roleDto = await _userService.FindRoleByNameAsync("User");
 
-                var createdUser = await _userService.CreateUserAsync(userDto, roleDto, userResource.Password);
+                var createdUser = await _userService.CreateUserAsync(registerUserDto, roleDto, userResource.Password);
 
                 var code = await _userService.GetPhoneNumberTokenAsync(createdUser.Id, createdUser.PhoneNumber);
 

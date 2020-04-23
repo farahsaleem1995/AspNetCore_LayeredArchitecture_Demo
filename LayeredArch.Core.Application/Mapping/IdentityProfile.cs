@@ -29,6 +29,11 @@ namespace LayeredArch.Core.Application.Mapping
                 .ForMember(du => du.Id, opt => opt.Ignore());
 
             CreateMap<RoleDto, DomainRole>();
+
+            CreateMap<UpdateUserDto, DomainUser>()
+                .ForMember(au => au.Id, opt => opt.Ignore())
+                .ForMember(au => au.Email, opt => opt.Ignore())
+                .ForMember(au => au.UserName, opt => opt.Ignore());
         }
     }
 }

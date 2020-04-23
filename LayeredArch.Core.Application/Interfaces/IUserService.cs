@@ -16,8 +16,8 @@ namespace LayeredArch.Core.Application.Interfaces
         Task<QueryResultDto<UserDto>> SearchByNameAsync(string searchKey, UserQueryDto queryDto, bool isAdmin = false);
         Task<IEnumerable<string>> GetRolesAsync(string userId);
         Task<RoleDto> FindRoleByNameAsync(string roleName);
-        Task<UserDto> CreateUserAsync(UserDto user, RoleDto role, string password);
-        Task UpdateUserAsync(string userId, UserDto userDto, bool isAdmin = false);
+        Task<UserDto> CreateUserAsync(RegisterUserDto user, RoleDto role, string password);
+        Task UpdateUserAsync(string userId, UpdateUserDto userDto, bool isAdmin = false);
         Task DeleteUserAsync(string userId);
         Task ActivateUserAsync(string userId);
         Task<UserDto> CheckPasswordSignInAsync(string userName, string password);

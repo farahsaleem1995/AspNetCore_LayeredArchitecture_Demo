@@ -10,6 +10,7 @@ using LayeredArch.Infra.Data.Context;
 using LayeredArch.Infra.Data.SeedData;
 using LayeredArch.Infra.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -65,6 +66,9 @@ namespace LayeredArch.Api
                 options.AddPolicy("UserPolicy", policy => policy.AddRequirements(new UserRequirements()));
                 options.AddPolicy("RolePolicy", policy => policy.AddRequirements(new RoleRequirements()));
             });
+
+            services.AddSingleton<IAuthorizationHandler, UserHandler>();
+            services.AddSingleton<IAuthorizationHandler, RoleHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

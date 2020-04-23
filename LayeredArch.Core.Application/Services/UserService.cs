@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LayeredArch.Core.Application.DTO;
+using LayeredArch.Core.Application.DTO.AuthDto;
 using LayeredArch.Core.Application.DTO.IdentityDto;
 using LayeredArch.Core.Application.Exceptions;
 using LayeredArch.Core.Application.Extensions;
@@ -20,23 +21,14 @@ namespace LayeredArch.Core.Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<DomainUser> _userManager;
-        private readonly RoleManager<DomainRole> _roleManager;
-        private readonly SignInManager<DomainUser> _signInManager;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<DomainUser> userManager, 
-                            RoleManager<DomainRole> roleManager,
-                            SignInManager<DomainUser> signInManager,
-                            IUserRepository userRepository,
+        public UserService(IUserRepository userRepository,
                             IUnitOfWork unitOfWork,
                             IMapper mapper)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _signInManager = signInManager;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -95,11 +87,11 @@ namespace LayeredArch.Core.Application.Services
 
             var query = users.AsQueryable();
             query = query.ApplySearch(searchKey);
-            result.TotalItems = await query.CountAsync();
+            result.TotalItems = query.Count();
 
             query = query.ApplyPaging(queryDto);
 
-            var items = await query.ToListAsync();
+            var items = query.ToList();
             result.Items = items.OrderBy(q => q.Similarity);
 
             return _mapper.Map<QueryResult<DomainUser>, QueryResultDto<UserDto>>(result);
@@ -107,19 +99,19 @@ namespace LayeredArch.Core.Application.Services
 
         public async Task<IEnumerable<string>> GetRolesAsync(string userId)
         {
-            var domainUser = await _userManager.FindByIdAsync(userId);
+            var domainUser = await _userRepository.FindByIdAsync(userId);
             if (domainUser == null)
             {
                 throw new CoreException(404, "User not found");
             }
-            var roles = await _userManager.GetRolesAsync(domainUser);
+            var roles = await _userRepository.GetRolesAsync(domainUser);
 
             return roles;
         }
 
         public async Task<RoleDto> FindRoleByNameAsync(string roleName)
         {
-            var role = await _roleManager.FindByNameAsync(roleName);
+            var role = await _userRepository.FindRoleByNameAsync(roleName);
             if (role == null)
             {
                 throw new CoreException(404, "Role not found");
@@ -128,30 +120,29 @@ namespace LayeredArch.Core.Application.Services
             return _mapper.Map<DomainRole, RoleDto>(role);
         }
 
-        public async Task<UserDto> CreateUserAsync(UserDto user, RoleDto role, string password)
+        public async Task<UserDto> CreateUserAsync(RegisterUserDto user, RoleDto role, string password)
         {
-            var domainUser = _mapper.Map<UserDto, DomainUser>(user);
+            var domainUser = _mapper.Map<RegisterUserDto, DomainUser>(user);
             var domainRole = _mapper.Map<RoleDto, DomainRole>(role);
             domainUser.UserRoles.Add(new DomainUserRole() { RoleId = domainRole.Id });
 
-            var result = await _userManager.CreateAsync(domainUser, password);
+            var result = await _userRepository.CreateAsync(domainUser, password);
             if (!result.Succeeded)
             {
-                var error = result.Errors.FirstOrDefault();
-                throw new CoreException(400, error.Description);
+                throw new CoreException(400, result.Error);
             }
 
             return _mapper.Map<DomainUser, UserDto>(domainUser);
         }
 
-        public async Task UpdateUserAsync(string userId, UserDto userDto, bool isAdmin = false)
+        public async Task UpdateUserAsync(string userId, UpdateUserDto updateUserDto, bool isAdmin = false)
         {
             var updateUser = await _userRepository.FindByIdAsync(userId, isAdmin: isAdmin);
             if (updateUser == null)
             {
                 throw new CoreException(404, "User not found");
             }
-            _mapper.Map<UserDto, DomainUser>(userDto, updateUser);
+            _mapper.Map(updateUserDto, updateUser);
             await _unitOfWork.CompleteAsync();
         }
 
@@ -179,13 +170,16 @@ namespace LayeredArch.Core.Application.Services
 
         public async Task<UserDto> CheckPasswordSignInAsync(string userName, string password)
         {
-            var domainUser = await _userManager.FindByNameAsync(userName);
-            if (domainUser != null && !domainUser.PhoneNumberConfirmed && await _userManager.CheckPasswordAsync(domainUser, password))
+            var domainUser = await _userRepository.FindByNameAsync(userName);
+            if (domainUser != null && !domainUser.PhoneNumberConfirmed && await _userRepository.CheckPasswordAsync(domainUser, password))
             {
                 throw new CoreException(404, "Phone number not confirmed yet");
             }
-
-            var result = await _signInManager.CheckPasswordSignInAsync(domainUser, password, false);
+            var result = await _userRepository.CheckPasswordSignInAsync(domainUser, password);
+            if (result.IsLockedOut)
+            {
+                throw new CoreException(403, "Invalid Request");
+            }
             if (!result.Succeeded)
             {
                 throw new CoreException(400, "Username and password does not match");
@@ -196,29 +190,29 @@ namespace LayeredArch.Core.Application.Services
 
         public async Task<string> GetPhoneNumberTokenAsync(string userId, string phoneNumber)
         {
-            var domainUser = await _userManager.FindByIdAsync(userId);
+            var domainUser = await _userRepository.FindByIdAsync(userId);
             if (domainUser == null)
             {
                 throw new CoreException(404, "User not found");
             }
 
-            return await _userManager.GenerateChangePhoneNumberTokenAsync(domainUser, phoneNumber);
+            return await _userRepository.GenerateChangePhoneNumberTokenAsync(domainUser, phoneNumber);
         }
 
         public async Task<string> GetPasswordResetTokenAsync(string userName)
         {
-            var domainUser = await _userManager.FindByNameAsync(userName);
+            var domainUser = await _userRepository.FindByNameAsync(userName);
             if (domainUser == null)
             {
                 throw new CoreException(404, "User not found");
             }
 
-            return await _userManager.GeneratePasswordResetTokenAsync(domainUser);
+            return await _userRepository.GeneratePasswordResetTokenAsync(domainUser);
         }
 
         public async Task<string> GetEmailConfirmationTokenAsync(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
             if (user == null)
             {
                 throw new CoreException(404, "User not found");
@@ -227,12 +221,12 @@ namespace LayeredArch.Core.Application.Services
             {
                 throw new CoreException(400, "Email is already confirmed!");
             }
-            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            return await _userRepository.GenerateEmailConfirmationTokenAsync(user);
         }
 
         public async Task ChangePhoneNumberAsync(string userId, string securityCode, string newPhoneNumber = null)
         {
-            var domainUser = await _userManager.FindByIdAsync(userId);
+            var domainUser = await _userRepository.FindByIdAsync(userId);
             if (domainUser == null)
             {
                 throw new CoreException(404, "User not found");
@@ -241,11 +235,10 @@ namespace LayeredArch.Core.Application.Services
             var phoneNumber = newPhoneNumber ?? domainUser.PhoneNumber;
             var previousUser = await _userRepository.FindByConfirmedPhoneNumberAsync(domainUser.Id);
 
-            var result = await _userManager.ChangePhoneNumberAsync(domainUser, phoneNumber, securityCode);
+            var result = await _userRepository.ChangePhoneNumberAsync(domainUser, phoneNumber, securityCode);
             if (!result.Succeeded)
             {
-                var error = result.Errors.FirstOrDefault();
-                throw new CoreException(400, error.Description);
+                throw new CoreException(400, result.Error);
             }
 
             if (previousUser != null)
@@ -257,34 +250,32 @@ namespace LayeredArch.Core.Application.Services
 
         public async Task ResetPasswordAsync(string userName, string securityCode, string password)
         {
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userRepository.FindByNameAsync(userName);
 
-            var result = await _userManager.ResetPasswordAsync(user, securityCode, password);
+            var result = await _userRepository.ResetPasswordAsync(user, securityCode, password);
             if (!result.Succeeded)
             {
-                var error = result.Errors.FirstOrDefault();
-                throw new CoreException(400, error.Description);
+                throw new CoreException(400, result.Error);
             }
-            if (await _userManager.IsLockedOutAsync(user))
+            if (await _userRepository.IsLockedOutAsync(user))
             {
-                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+                await _userRepository.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
             }
         }
 
         public async Task ConfirmEmailAsync(string userId, string token)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
             if (user == null)
             {
                 throw new CoreException(404, "User not found");
             }
 
             var previousUser = await _userRepository.FindByConfirmedEmailAsync(user.Id);
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userRepository.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
             {
-                var error = result.Errors.FirstOrDefault();
-                throw new CoreException(400, error.Description);
+                throw new CoreException(400, result.Error);
             }
             if (previousUser != null)
             {

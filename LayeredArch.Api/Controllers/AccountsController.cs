@@ -32,6 +32,7 @@ namespace LayeredArch.Api.Controllers
         public async Task<IActionResult> GetAccounts([FromQuery] UserQueryResource queryResource)
         {
             var queryDto = _mapper.Map<UserQueryResource, UserQueryDto>(queryResource);
+
             var queryResult = await _userService.GetUsersAsync(queryDto);
 
             var response = _mapper.Map<QueryResultDto<UserDto>, QueryResultResource<UserAdminstrationResource>>(queryResult);
@@ -67,11 +68,9 @@ namespace LayeredArch.Api.Controllers
         [HttpGet("search/{searchKey}")]
         public async Task<IActionResult> SearchAccountByName([FromRoute] string searchKey, [FromQuery] int page, [FromQuery] byte pageSize)
         {
-            var queryResource = new UserQueryResource() { Page = page, PageSize = pageSize };
-            var queryObj = _mapper.Map<UserQueryResource, UserQueryDto>(queryResource);
-
+            var queryDto = new UserQueryDto() { Page = page, PageSize = pageSize };
             var isAdmin = User.IsInRole("Admin");
-            var users = await _userService.SearchByNameAsync(searchKey, queryObj, isAdmin: isAdmin);
+            var users = await _userService.SearchByNameAsync(searchKey, queryDto, isAdmin: isAdmin);
 
             var response = _mapper.Map<QueryResultDto<UserDto>, QueryResultResource<UserReducedResource>>(users);
             return new OkObjectResult(response);
@@ -84,13 +83,31 @@ namespace LayeredArch.Api.Controllers
             if (ModelState.IsValid)
             {
                 var isAdmin = User.IsInRole("Admin");
-                var userDto = _mapper.Map<UpdateUserResource, UserDto>(updateUserResource);
-                await _userService.UpdateUserAsync(userId, userDto, isAdmin: isAdmin);
+                var updateUserDto = _mapper.Map<UpdateUserResource, UpdateUserDto>(updateUserResource);
+                await _userService.UpdateUserAsync(userId, updateUserDto, isAdmin: isAdmin);
 
                 return new OkObjectResult(new { messgae = "User has been updated successfully" });
             }
 
             return new BadRequestObjectResult(new { message = "Failed to update user account!" });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteAccount([FromRoute] string userId)
+        {
+            await _userService.DeleteUserAsync(userId);
+
+            return new OkObjectResult(new { message = "User has been disactivated successfully." });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{userId}/Activate")]
+        public async Task<IActionResult> ActivateAccount([FromRoute] string userId)
+        {
+            await _userService.ActivateUserAsync(userId);
+
+            return new OkObjectResult(new { message = "User has been activated successfully." });
         }
     }
 }

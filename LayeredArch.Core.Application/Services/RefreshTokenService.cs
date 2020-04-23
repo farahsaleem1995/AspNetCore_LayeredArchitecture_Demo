@@ -17,17 +17,17 @@ namespace LayeredArch.Core.Application.Services
     public class RefreshTokenService : IRefreshTokenService
     {
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly SignInManager<DomainUser> _signInManager;
+        private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public RefreshTokenService(IRefreshTokenRepository refreshTokenRepository,
-                                    SignInManager<DomainUser> signInManager,
+                                    IUserRepository userRepository,
                                     IUnitOfWork unitOfWork,
                                     IMapper mapper)
         {
             _refreshTokenRepository = refreshTokenRepository;
-            _signInManager = signInManager;
+            _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -47,7 +47,7 @@ namespace LayeredArch.Core.Application.Services
         public async Task<UserDto> CheckUser(RefreshTokenDto token)
         {
             var refreshToken = await _refreshTokenRepository.Get(token.Id, token.AccessToken);
-            if (refreshToken == null || !await _signInManager.CanSignInAsync(refreshToken.User))
+            if (refreshToken == null || !await _userRepository.CanSignInAsync(refreshToken.User))
             {
                 throw new CoreException(401, "Invalid request");
             }

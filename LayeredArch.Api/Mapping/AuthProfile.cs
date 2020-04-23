@@ -14,7 +14,8 @@ namespace LayeredArch.Api.Mapping
         public AuthProfile()
         {
             // Map API resources to core layer DTO
-            CreateMap<RegisterUserResource, UserDto>();
+            CreateMap<RegisterUserResource, RegisterUserDto>();
+
             CreateMap<CreateTokenResourcecs, RefreshTokenDto>()
                 .ForMember(t => t.Id, opt => opt.MapFrom(tr => tr.RefreshToken));
 

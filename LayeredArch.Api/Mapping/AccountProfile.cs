@@ -34,7 +34,7 @@ namespace LayeredArch.Api.Mapping
             // Map API resources to core layer DTO
             CreateMap<UserQueryResource, UserQueryDto>();
 
-            CreateMap<UpdateUserResource, UserDto>();
+            CreateMap<UpdateUserResource, UpdateUserDto>();
         }
     }
 }

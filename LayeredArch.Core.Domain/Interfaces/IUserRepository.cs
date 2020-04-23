@@ -15,5 +15,19 @@ namespace LayeredArch.Core.Domain.Interfaces
         Task<DomainUser> FindByNameAsync(string userId, bool isAdmin = false);
         Task<DomainUser> FindByConfirmedPhoneNumberAsync(string userId);
         Task<DomainUser> FindByConfirmedEmailAsync(string userId);
+        Task<IEnumerable<string>> GetRolesAsync(DomainUser user);
+        Task<DomainRole> FindRoleByNameAsync(string roleName);
+        Task<IUserResult> CreateAsync(DomainUser user, string password);
+        Task<ILogInResult> CheckPasswordSignInAsync(DomainUser user, string password);
+        Task<bool> CheckPasswordAsync(DomainUser user, string password);
+        Task<bool> CanSignInAsync(DomainUser user);
+        Task<string> GenerateChangePhoneNumberTokenAsync(DomainUser user, string phoneNumber);
+        Task<string> GeneratePasswordResetTokenAsync(DomainUser user);
+        Task<string> GenerateEmailConfirmationTokenAsync(DomainUser user);
+        Task<IUserResult> ChangePhoneNumberAsync(DomainUser user, string phoneNumber, string securityCode);
+        Task<IUserResult> ResetPasswordAsync(DomainUser user, string securityCode, string password);
+        Task<IUserResult> ConfirmEmailAsync(DomainUser user, string token);
+        Task<bool> IsLockedOutAsync(DomainUser user);
+        Task SetLockoutEndDateAsync(DomainUser user, DateTimeOffset? lockoutEnd);
     }
 }

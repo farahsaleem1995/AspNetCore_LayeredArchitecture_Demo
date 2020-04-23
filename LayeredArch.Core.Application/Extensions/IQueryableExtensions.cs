@@ -10,16 +10,6 @@ namespace LayeredArch.Core.Application.Extensions
 {
     public static class IQueryableExtensions
     {
-        public static async Task<int> CountAsync<T>(this IQueryable<T> query)
-        {
-            return await query.CountAsync();
-        }
-
-        public static async Task<IEnumerable<T>> ToListAsync<T>(this IQueryable<T> query)
-        {
-            return await query.ToListAsync();
-        }
-
         public static IQueryable<T> ApplyFiltering<T>(this IQueryable<T> query, IQueryObject queryObj, Dictionary<string, Expression<Func<T, bool>>> columnsMap)
         {
             if (queryObj != null)

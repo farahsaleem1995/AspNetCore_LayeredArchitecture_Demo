@@ -26,6 +26,7 @@ namespace LayeredArch.Api.Policies.Account
                 var routeValues = _httpContextAccessor.HttpContext.Request.RouteValues;
                 object routeUserId;
                 routeValues.TryGetValue("userId", out routeUserId);
+                //throw new Exception(routeUserId.ToString());
 
                 if (loggedInUserId.ToLower() == routeUserId.ToString().ToLower() || _httpContextAccessor.HttpContext.User.IsInRole("Admin"))
                 {
