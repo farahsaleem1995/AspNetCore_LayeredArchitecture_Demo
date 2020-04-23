@@ -89,9 +89,7 @@ namespace LayeredArch.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            SeedDataClass.Seed(context, roleManager, userManager);
-
-            //app.UseApplicationErrorHandling();
+            app.UseApplicationErrorHandling();
 
             app.UseEndpoints(endpoints =>
             {

@@ -13,6 +13,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200420095333_ExtendIdentity.cs" />
     <Compile Remove="Migrations\20200420095333_ExtendIdentity.Designer.cs" />
+    <Compile Remove="Migrations\20200423122029_SeedIdentity.cs" />
+    <Compile Remove="Migrations\20200423122029_SeedIdentity.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

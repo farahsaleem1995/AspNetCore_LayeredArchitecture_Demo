@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using LayeredArch.Core.Domain.Models.Identity;
 using LayeredArch.Core.Domain.Models.Auth;
+using LayeredArch.Infra.Data.SeedData;
 
 namespace LayeredArch.Infra.Data.Context
 {
@@ -41,6 +42,10 @@ namespace LayeredArch.Infra.Data.Context
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Seed Identity
+            builder.SeedIdentity();
+            builder.SeedUserRoles();
         }
 
         public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
