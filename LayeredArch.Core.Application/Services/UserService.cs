@@ -142,7 +142,7 @@ namespace LayeredArch.Core.Application.Services
             var result = await _userRepository.AddToRoleAsync(domainUser, roleName);
             if (!result.Succeeded)
             {
-                throw new CoreException(400, result.Error);
+                throw new CoreException(400, result.Errors.FirstOrDefault());
             }
         }
 
@@ -157,7 +157,7 @@ namespace LayeredArch.Core.Application.Services
             var result = await _userRepository.RemoveFromRoleAsync(domainUser, roleName);
             if (!result.Succeeded)
             {
-                throw new CoreException(400, result.Error);
+                throw new CoreException(400, result.Errors.FirstOrDefault());
             }
         }
 
@@ -170,7 +170,7 @@ namespace LayeredArch.Core.Application.Services
             var result = await _userRepository.CreateAsync(domainUser, password);
             if (!result.Succeeded)
             {
-                throw new CoreException(400, result.Error);
+                throw new CoreException(400, result.Errors.FirstOrDefault());
             }
 
             return _mapper.Map<DomainUser, UserDto>(domainUser);
@@ -279,7 +279,7 @@ namespace LayeredArch.Core.Application.Services
             var result = await _userRepository.ChangePhoneNumberAsync(domainUser, phoneNumber, securityCode);
             if (!result.Succeeded)
             {
-                throw new CoreException(400, result.Error);
+                throw new CoreException(400, result.Errors.FirstOrDefault());
             }
 
             if (previousUser != null)
@@ -296,7 +296,7 @@ namespace LayeredArch.Core.Application.Services
             var result = await _userRepository.ResetPasswordAsync(user, securityCode, password);
             if (!result.Succeeded)
             {
-                throw new CoreException(400, result.Error);
+                throw new CoreException(400, result.Errors.FirstOrDefault());
             }
             if (await _userRepository.IsLockedOutAsync(user))
             {
@@ -316,7 +316,7 @@ namespace LayeredArch.Core.Application.Services
             var result = await _userRepository.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
             {
-                throw new CoreException(400, result.Error);
+                throw new CoreException(400, result.Errors.FirstOrDefault());
             }
             if (previousUser != null)
             {

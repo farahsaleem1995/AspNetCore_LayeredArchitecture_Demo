@@ -7,8 +7,15 @@ namespace LayeredArch.Infra.Data.Helpers
 {
     public class LogInResult : ILogInResult
     {
-        public bool Succeeded { get; set; }
-        public bool IsLockedOut { get; set; }
-        public bool IsNotAllowed { get; set; }
+        public bool Succeeded { get; private set; }
+        public bool IsLockedOut { get; private set; }
+        public bool IsNotAllowed { get; private set; }
+
+        public LogInResult(bool succeeded, bool isLockedOut, bool isNotAllowed)
+        {
+            this.Succeeded = succeeded;
+            this.IsLockedOut = isLockedOut;
+            this.IsNotAllowed = isNotAllowed;
+        }
     }
 }

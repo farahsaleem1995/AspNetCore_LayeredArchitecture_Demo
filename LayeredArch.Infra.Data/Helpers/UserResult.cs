@@ -8,7 +8,13 @@ namespace LayeredArch.Infra.Data.Helpers
 {
     public class UserResult : IUserResult
     {
-        public bool Succeeded { get; set; }
-        public string Error { get; set; }
+        public bool Succeeded { get; private set; }
+        public IEnumerable<string > Errors { get; private set; }
+
+        public UserResult(bool succeeded, IEnumerable<string> errors)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = errors;
+        }
     }
 }

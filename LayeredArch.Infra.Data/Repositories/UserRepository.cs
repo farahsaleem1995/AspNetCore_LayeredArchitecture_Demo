@@ -101,22 +101,16 @@ namespace LayeredArch.Infra.Data.Repositories
 
         public async Task<IUserResult> AddToRoleAsync(DomainUser user, string roleName)
         {
-            var userResult = new UserResult();
-
             var result = await _userManager.AddToRoleAsync(user, roleName);
-            userResult.Succeeded = result.Succeeded;
-            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+            var userResult = new UserResult(result.Succeeded, result.Errors.Select(e => e.Description));
 
             return userResult;
         }
 
         public async Task<IUserResult> RemoveFromRoleAsync(DomainUser user, string roleName)
         {
-            var userResult = new UserResult();
-
             var result = await _userManager.RemoveFromRoleAsync(user, roleName);
-            userResult.Succeeded = result.Succeeded;
-            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+            var userResult = new UserResult(result.Succeeded, result.Errors.Select(e => e.Description));
 
             return userResult;
         }
@@ -128,23 +122,16 @@ namespace LayeredArch.Infra.Data.Repositories
 
         public async Task<IUserResult> CreateAsync(DomainUser user, string password)
         {
-            var userResult = new UserResult();
-
             var result = await _userManager.CreateAsync(user, password);
-            userResult.Succeeded = result.Succeeded;
-            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+            var userResult = new UserResult(result.Succeeded, result.Errors.Select(e => e.Description));
 
             return userResult;
         }
 
         public async Task<ILogInResult> CheckPasswordSignInAsync(DomainUser user, string password)
         {
-            var logInResult = new LogInResult();
-
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, true);
-            logInResult.Succeeded = result.Succeeded;
-            logInResult.IsLockedOut = result.IsLockedOut;
-            logInResult.IsNotAllowed = result.IsNotAllowed;
+            var logInResult = new LogInResult(result.Succeeded, result.IsLockedOut, result.IsNotAllowed);
 
             return logInResult;
         }
@@ -176,33 +163,24 @@ namespace LayeredArch.Infra.Data.Repositories
 
         public async Task<IUserResult> ChangePhoneNumberAsync(DomainUser user, string phoneNumber, string securityCode)
         {
-            var userResult = new UserResult();
-
             var result = await _userManager.ChangePhoneNumberAsync(user, phoneNumber, securityCode);
-            userResult.Succeeded = result.Succeeded;
-            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+            var userResult = new UserResult(result.Succeeded, result.Errors.Select(e => e.Description));
 
             return userResult;
         }
 
         public async Task<IUserResult> ResetPasswordAsync(DomainUser user, string securityCode, string password)
         {
-            var userResult = new UserResult();
-
             var result = await _userManager.ResetPasswordAsync(user, securityCode, password);
-            userResult.Succeeded = result.Succeeded;
-            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+            var userResult = new UserResult(result.Succeeded, result.Errors.Select(e => e.Description));
 
             return userResult;
         }
 
         public async Task<IUserResult> ConfirmEmailAsync(DomainUser user, string token)
         {
-            var userResult = new UserResult();
-
             var result = await _userManager.ConfirmEmailAsync(user, token);
-            userResult.Succeeded = result.Succeeded;
-            userResult.Error = result.Errors.Select(e => e.Description).FirstOrDefault();
+            var userResult = new UserResult(result.Succeeded, result.Errors.Select(e => e.Description));
 
             return userResult;
         }

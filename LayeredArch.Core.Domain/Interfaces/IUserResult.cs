@@ -6,7 +6,7 @@ namespace LayeredArch.Core.Domain.Interfaces
 {
     public interface IUserResult
     {
-        bool Succeeded { get; set; }
-        string Error { get; set; }
+        bool Succeeded { get; }
+        IEnumerable<string > Errors { get;  }
     }
 }
