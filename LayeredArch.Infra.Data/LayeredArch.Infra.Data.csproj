@@ -15,6 +15,20 @@
     <Compile Remove="Migrations\20200420095333_ExtendIdentity.Designer.cs" />
     <Compile Remove="Migrations\20200423122029_SeedIdentity.cs" />
     <Compile Remove="Migrations\20200423122029_SeedIdentity.Designer.cs" />
+    <Compile Remove="Migrations\20200423123850_SeedIdentity.cs" />
+    <Compile Remove="Migrations\20200423123850_SeedIdentity.Designer.cs" />
+    <Compile Remove="Migrations\20200423124310_SeedUserRoles.cs" />
+    <Compile Remove="Migrations\20200423124310_SeedUserRoles.Designer.cs" />
+    <Compile Remove="Migrations\20200425065946_SeedIdentityRoles.cs" />
+    <Compile Remove="Migrations\20200425065946_SeedIdentityRoles.Designer.cs" />
+    <Compile Remove="Migrations\20200425070020_SeedIdentityUsers.cs" />
+    <Compile Remove="Migrations\20200425070020_SeedIdentityUsers.Designer.cs" />
+    <Compile Remove="Migrations\20200425070042_SeedIdentityUserRoles.cs" />
+    <Compile Remove="Migrations\20200425070042_SeedIdentityUserRoles.Designer.cs" />
+    <Compile Remove="Migrations\20200425070400_SeedIdentityUsers.cs" />
+    <Compile Remove="Migrations\20200425070400_SeedIdentityUsers.Designer.cs" />
+    <Compile Remove="Migrations\20200425070540_SeedIdentityUserRoles.cs" />
+    <Compile Remove="Migrations\20200425070540_SeedIdentityUserRoles.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

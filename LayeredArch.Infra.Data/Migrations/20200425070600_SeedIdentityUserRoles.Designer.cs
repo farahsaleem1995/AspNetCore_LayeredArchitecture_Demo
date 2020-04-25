@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LayeredArch.Infra.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200423123850_SeedIdentity")]
-    partial class SeedIdentity
+    [Migration("20200425070600_SeedIdentityUserRoles")]
+    partial class SeedIdentityUserRoles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,21 +76,21 @@ namespace LayeredArch.Infra.Data.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "4da65403-aa0b-44d8-b8cb-434455ab506d",
+                            ConcurrencyStamp = "76a3286f-5b95-46bc-950e-2bca61407c72",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = "2301d884-221a-4e7d-b509-0113dcc043E1",
-                            ConcurrencyStamp = "fc9abc81-01d8-4e4b-b82b-2a7510acb038",
+                            ConcurrencyStamp = "02455558-dbd3-4ef3-938a-6cd995a40dc1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "7d9b7113-a8f8-4035-99a7-a20dd400f6a3",
-                            ConcurrencyStamp = "ea804d5a-7776-4f10-b943-d09875eb7a66",
+                            ConcurrencyStamp = "023bcca2-a0bd-4c9e-bcc9-0b75bec5f6e5",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         });
@@ -179,8 +179,8 @@ namespace LayeredArch.Infra.Data.Migrations
                         {
                             Id = "01b168fe-810b-432d-9010-233ba0b380e9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6dff4456-ad45-44ff-9804-f4f65e3fb51d",
-                            CreatedAt = new DateTime(2020, 4, 23, 15, 38, 49, 792, DateTimeKind.Local).AddTicks(1754),
+                            ConcurrencyStamp = "e806fac7-57f4-4998-af12-2d81aac0a489",
+                            CreatedAt = new DateTime(2020, 4, 25, 10, 6, 0, 48, DateTimeKind.Local).AddTicks(8729),
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -189,10 +189,10 @@ namespace LayeredArch.Infra.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMSSQVt/GpWh/PEc/iVfBD5MmURm4x9ALHLyvTRrvKBzrQ3YV3hlPxyxtPjNtCNhNg==",
-                            PhoneNumber = "123a123a",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGLn7DFunlWhoBCyUYsYBRu/NY0e6EXX7TaMIjG9L9bLHhg60lBOT6wmGha4C6bbNw==",
+                            PhoneNumber = "000-000-0000",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "a4c63a92-d217-4e1e-8ba2-b7c6041999c2",
+                            SecurityStamp = "badbde7f-0984-4975-af13-80c4b202f252",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -211,6 +211,23 @@ namespace LayeredArch.Infra.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "01b168fe-810b-432d-9010-233ba0b380e9",
+                            RoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e575"
+                        },
+                        new
+                        {
+                            UserId = "01b168fe-810b-432d-9010-233ba0b380e9",
+                            RoleId = "2301d884-221a-4e7d-b509-0113dcc043E1"
+                        },
+                        new
+                        {
+                            UserId = "01b168fe-810b-432d-9010-233ba0b380e9",
+                            RoleId = "7d9b7113-a8f8-4035-99a7-a20dd400f6a3"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

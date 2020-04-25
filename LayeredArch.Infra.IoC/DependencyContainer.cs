@@ -5,7 +5,6 @@ using LayeredArch.Core.Domain.Interfaces;
 using LayeredArch.Core.Domain.Models.Identity;
 using LayeredArch.Infra.Data.Context;
 using LayeredArch.Infra.Data.Repositories;
-using LayeredArch.Infra.Data.SeedData;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

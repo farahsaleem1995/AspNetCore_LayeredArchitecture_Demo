@@ -214,7 +214,7 @@ namespace LayeredArch.Core.Application.Services
             var domainUser = await _userRepository.FindByNameAsync(userName);
             if (domainUser != null && !domainUser.PhoneNumberConfirmed && await _userRepository.CheckPasswordAsync(domainUser, password))
             {
-                throw new CoreException(404, "Phone number not confirmed yet");
+                throw new CoreException(401, "Phone number not confirmed yet");
             }
             var result = await _userRepository.CheckPasswordSignInAsync(domainUser, password);
             if (result.IsLockedOut)
@@ -223,7 +223,7 @@ namespace LayeredArch.Core.Application.Services
             }
             if (!result.Succeeded)
             {
-                throw new CoreException(400, "Username and password does not match");
+                throw new CoreException(401, "Username and password does not match");
             }
 
             return _mapper.Map<DomainUser, UserDto>(domainUser);

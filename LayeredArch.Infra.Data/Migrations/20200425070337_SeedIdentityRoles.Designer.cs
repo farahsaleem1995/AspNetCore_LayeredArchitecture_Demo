@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LayeredArch.Infra.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200423124310_SeedUserRoles")]
-    partial class SeedUserRoles
+    [Migration("20200425070337_SeedIdentityRoles")]
+    partial class SeedIdentityRoles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,21 +76,21 @@ namespace LayeredArch.Infra.Data.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "40365790-e65a-45bb-9fb8-943ff82d8b95",
+                            ConcurrencyStamp = "ad68046a-e78c-4082-ba01-36126130c89e",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = "2301d884-221a-4e7d-b509-0113dcc043E1",
-                            ConcurrencyStamp = "1296e13c-ab7a-4637-937a-f4683588b53d",
+                            ConcurrencyStamp = "dd055320-67b3-4fca-8fd2-df808bdd707a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "7d9b7113-a8f8-4035-99a7-a20dd400f6a3",
-                            ConcurrencyStamp = "61058541-2ebc-458b-abfa-458227cf9277",
+                            ConcurrencyStamp = "82287d55-6bfe-4a1d-8c22-9f102953c3a0",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         });
@@ -173,29 +173,6 @@ namespace LayeredArch.Infra.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "01b168fe-810b-432d-9010-233ba0b380e9",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "49810cc1-4bc7-4a66-a064-de6da47dd4e1",
-                            CreatedAt = new DateTime(2020, 4, 23, 15, 43, 9, 578, DateTimeKind.Local).AddTicks(1243),
-                            Email = "admin@admin.com",
-                            EmailConfirmed = true,
-                            FirstName = "Super",
-                            IsActive = true,
-                            LastName = "Admin",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@ADMIN.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIRZA2hdgVObSpHnh+892b7eAyGjXFfD1nI9AV0bMcoQW/SHjWn8IuUMQYm8c5cJ3A==",
-                            PhoneNumber = "123a123a",
-                            PhoneNumberConfirmed = true,
-                            SecurityStamp = "59724a69-e59d-4f79-8a8f-84be7ba0f1c3",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("LayeredArch.Core.Domain.Models.Identity.DomainUserRole", b =>
@@ -211,23 +188,6 @@ namespace LayeredArch.Infra.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "01b168fe-810b-432d-9010-233ba0b380e9",
-                            RoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e575"
-                        },
-                        new
-                        {
-                            UserId = "01b168fe-810b-432d-9010-233ba0b380e9",
-                            RoleId = "2301d884-221a-4e7d-b509-0113dcc043E1"
-                        },
-                        new
-                        {
-                            UserId = "01b168fe-810b-432d-9010-233ba0b380e9",
-                            RoleId = "7d9b7113-a8f8-4035-99a7-a20dd400f6a3"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

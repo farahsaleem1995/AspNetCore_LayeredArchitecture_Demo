@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LayeredArch.Infra.Data.Migrations
 {
-    public partial class SeedUserRoles : Migration
+    public partial class SeedIdentityUserRoles : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,21 +12,21 @@ namespace LayeredArch.Infra.Data.Migrations
                 keyColumn: "Id",
                 keyValue: "2301d884-221a-4e7d-b509-0113dcc043E1",
                 column: "ConcurrencyStamp",
-                value: "1296e13c-ab7a-4637-937a-f4683588b53d");
+                value: "02455558-dbd3-4ef3-938a-6cd995a40dc1");
 
             migrationBuilder.UpdateData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "7d9b7113-a8f8-4035-99a7-a20dd400f6a3",
                 column: "ConcurrencyStamp",
-                value: "61058541-2ebc-458b-abfa-458227cf9277");
+                value: "023bcca2-a0bd-4c9e-bcc9-0b75bec5f6e5");
 
             migrationBuilder.UpdateData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                 column: "ConcurrencyStamp",
-                value: "40365790-e65a-45bb-9fb8-943ff82d8b95");
+                value: "76a3286f-5b95-46bc-950e-2bca61407c72");
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -43,7 +43,7 @@ namespace LayeredArch.Infra.Data.Migrations
                 keyColumn: "Id",
                 keyValue: "01b168fe-810b-432d-9010-233ba0b380e9",
                 columns: new[] { "ConcurrencyStamp", "CreatedAt", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "49810cc1-4bc7-4a66-a064-de6da47dd4e1", new DateTime(2020, 4, 23, 15, 43, 9, 578, DateTimeKind.Local).AddTicks(1243), "AQAAAAEAACcQAAAAEIRZA2hdgVObSpHnh+892b7eAyGjXFfD1nI9AV0bMcoQW/SHjWn8IuUMQYm8c5cJ3A==", "59724a69-e59d-4f79-8a8f-84be7ba0f1c3" });
+                values: new object[] { "e806fac7-57f4-4998-af12-2d81aac0a489", new DateTime(2020, 4, 25, 10, 6, 0, 48, DateTimeKind.Local).AddTicks(8729), "AQAAAAEAACcQAAAAEGLn7DFunlWhoBCyUYsYBRu/NY0e6EXX7TaMIjG9L9bLHhg60lBOT6wmGha4C6bbNw==", "badbde7f-0984-4975-af13-80c4b202f252" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -68,28 +68,28 @@ namespace LayeredArch.Infra.Data.Migrations
                 keyColumn: "Id",
                 keyValue: "2301d884-221a-4e7d-b509-0113dcc043E1",
                 column: "ConcurrencyStamp",
-                value: "fc9abc81-01d8-4e4b-b82b-2a7510acb038");
+                value: "6d0f00f3-0e0e-4581-9bbc-7aaafa1e8fe7");
 
             migrationBuilder.UpdateData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "7d9b7113-a8f8-4035-99a7-a20dd400f6a3",
                 column: "ConcurrencyStamp",
-                value: "ea804d5a-7776-4f10-b943-d09875eb7a66");
+                value: "87a8e95d-13a9-4fd6-9121-b0e241952ff4");
 
             migrationBuilder.UpdateData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                 column: "ConcurrencyStamp",
-                value: "4da65403-aa0b-44d8-b8cb-434455ab506d");
+                value: "9e10de69-c41e-4238-b103-c6584f8a602e");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "01b168fe-810b-432d-9010-233ba0b380e9",
                 columns: new[] { "ConcurrencyStamp", "CreatedAt", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "6dff4456-ad45-44ff-9804-f4f65e3fb51d", new DateTime(2020, 4, 23, 15, 38, 49, 792, DateTimeKind.Local).AddTicks(1754), "AQAAAAEAACcQAAAAEMSSQVt/GpWh/PEc/iVfBD5MmURm4x9ALHLyvTRrvKBzrQ3YV3hlPxyxtPjNtCNhNg==", "a4c63a92-d217-4e1e-8ba2-b7c6041999c2" });
+                values: new object[] { "67f0fe57-9574-4347-b726-8bde5f95578c", new DateTime(2020, 4, 25, 10, 4, 58, 8, DateTimeKind.Local).AddTicks(8269), "AQAAAAEAACcQAAAAEBLMzwr3gIbvvp2IeBQfT1BKusjexuDC+SdyrKhI0phgmf2obYXdwRXPpbuB2g2TBA==", "e5a2345d-9802-477a-b2aa-afbe4a6bff93" });
         }
     }
 }

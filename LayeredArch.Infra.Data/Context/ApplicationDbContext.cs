@@ -9,7 +9,7 @@ using System.IO;
 using System.Text;
 using LayeredArch.Core.Domain.Models.Identity;
 using LayeredArch.Core.Domain.Models.Auth;
-using LayeredArch.Infra.Data.SeedData;
+using LayeredArch.Infra.Data.Extensions;
 
 namespace LayeredArch.Infra.Data.Context
 {
@@ -30,6 +30,7 @@ namespace LayeredArch.Infra.Data.Context
         {
             base.OnModelCreating(builder);
 
+            // Configure Identity Many-to-Many Relations
             builder.Entity<DomainUser>()
                 .HasMany(e => e.UserRoles)
                 .WithOne(e => e.User)
@@ -44,7 +45,8 @@ namespace LayeredArch.Infra.Data.Context
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Seed Identity
-            builder.SeedIdentity();
+            builder.SeedRoles();
+            builder.SeedUsers();
             builder.SeedUserRoles();
         }
 

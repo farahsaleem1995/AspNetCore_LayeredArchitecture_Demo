@@ -1,4 +1,4 @@
-﻿using LayeredArch.Core.Application.Exceptions;
+﻿using LayeredArch.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -36,10 +36,11 @@ namespace LayeredArch.Api.Middlewares
             string result;
 
             // Specify different custom exceptions here
-            if (ex is CoreException)
+            if (ex is ICoreException)
             {
-                code = HttpStatusCode.BadRequest;
-                result = JsonConvert.SerializeObject(new { message = ex.Message });
+                var coreException = (ICoreException)ex;
+                code = (HttpStatusCode)coreException.StatusCode;
+                result = JsonConvert.SerializeObject(new { message = coreException.ErrorMessgae });
             }
             else
             {

@@ -7,7 +7,6 @@ using LayeredArch.Api.Middlewares;
 using LayeredArch.Api.Policies.Account;
 using LayeredArch.Core.Domain.Models.Identity;
 using LayeredArch.Infra.Data.Context;
-using LayeredArch.Infra.Data.SeedData;
 using LayeredArch.Infra.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
